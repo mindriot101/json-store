@@ -64,3 +64,13 @@ def test_append_with_kwargs(append_data):
         {'a': 10},
         {'b': 15},
     ]
+
+def test_working_after_failure(store):
+    store.append(a=10)
+    with pytest.raises(CannotSerialize):
+        store.append({'a': object()})
+
+    with open(store.filename) as infile:
+        print(infile.read())
+
+    assert store.read() == [{'a': 10}]

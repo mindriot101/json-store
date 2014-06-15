@@ -19,23 +19,28 @@ class JSONStore(object):
             self.tempdir = tempfile.mkdtemp()
             self.filename = os.path.join(self.tempdir, "store.json")
 
+    def raise_if_cannot_serialise(self, data):
+        try:
+            _ = json.dumps(data)
+        except TypeError as err:
+            if "serializable" in str(err):
+                raise CannotSerialize("Cannot serialise data: {0}"
+                                        .format(data))
+            else:
+                raise
+
+
     def append(self, data=None, **kwargs):
         previous_data = self.read()
 
         data = data if data else {}
         new_data = previous_data + [dict(data, **kwargs)]
 
+        self.raise_if_cannot_serialise(new_data)
+
         with self.lock:
             with open(self.filename, 'w') as outfile:
-                try:
-                    self.dump(new_data, outfile, indent=2)
-                except TypeError as err:
-                    if "serializable" in str(err):
-                        raise CannotSerialize("Cannot serialise data: {0}"
-                                              .format(new_data))
-                    else:
-                        raise
-            
+                self.dump(new_data, outfile)
 
     def read(self):
         with self.lock:
