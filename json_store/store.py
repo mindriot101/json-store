@@ -2,6 +2,7 @@ import tempfile
 import os
 import json
 from threading import Lock
+from functools import partial
 
 class CannotSerialize(RuntimeError): pass
 
@@ -10,6 +11,8 @@ class JSONStore(object):
     lock = Lock()
 
     def __init__(self, name=None):
+        self.dump = partial(json.dump, indent=2)
+
         if name:
             self.filename = name
         else:
@@ -25,7 +28,7 @@ class JSONStore(object):
         with self.lock:
             with open(self.filename, 'w') as outfile:
                 try:
-                    json.dump(new_data, outfile, indent=2)
+                    self.dump(new_data, outfile, indent=2)
                 except TypeError as err:
                     if "serializable" in str(err):
                         raise CannotSerialize("Cannot serialise data: {0}"
