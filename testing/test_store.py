@@ -3,7 +3,7 @@ import pytest
 import json
 
 from json_store import JSONStore
-from json_store.store import CannotSerialize
+from json_store.store import CannotSerialise
 
 @pytest.fixture
 def store():
@@ -54,7 +54,7 @@ def test_to_string(store):
         store.filename, store.read())
 
 def test_bad_serialise(store):
-    with pytest.raises(CannotSerialize) as err:
+    with pytest.raises(CannotSerialise) as err:
         store.append({'a': object()})
 
 def test_append_with_kwargs(append_data):
@@ -67,7 +67,7 @@ def test_append_with_kwargs(append_data):
 
 def test_working_after_failure(store):
     store.append(a=10)
-    with pytest.raises(CannotSerialize):
+    with pytest.raises(CannotSerialise):
         store.append({'a': object()})
 
     with open(store.filename) as infile:

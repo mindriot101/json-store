@@ -4,7 +4,7 @@ import json
 from threading import Lock
 from functools import partial
 
-class CannotSerialize(RuntimeError): pass
+class CannotSerialise(RuntimeError): pass
 
 class JSONStore(object):
 
@@ -24,7 +24,7 @@ class JSONStore(object):
             _ = json.dumps(data)
         except TypeError as err:
             if "serializable" in str(err):
-                raise CannotSerialize("Cannot serialise data: {0}"
+                raise CannotSerialise("Cannot serialise data: {0}"
                                         .format(data))
             else:
                 raise
