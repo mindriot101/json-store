@@ -1,1 +1,6 @@
 .tox
+.direnv/
+json_store.egg-info/
+json_store/__init__.pyc
+json_store/store.pyc
+testing/__pycache__/
